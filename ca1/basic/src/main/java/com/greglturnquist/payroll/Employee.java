@@ -39,8 +39,8 @@ public class Employee {
     }
 
     public Employee(String firstName, String lastName, String description, int jobYears) {
-        if (firstName == null || lastName == null || description == null || jobYears < 0)
-            throw new IllegalArgumentException("First name, last name and description must not be null");
+        if (firstName == null || firstName.isEmpty() || lastName == null || lastName.isEmpty() || description == null || description.isEmpty() || jobYears < 0)
+            throw new IllegalArgumentException("First name, last name, and description must not be null or empty. Job years must be greater than 0.");
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
