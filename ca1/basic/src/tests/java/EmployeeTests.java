@@ -17,9 +17,11 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
+
 
         //Act
-        Employee employee = new Employee(firstName, lastName, description, jobYears);
+        Employee employee = new Employee(firstName, lastName, description, jobYears,email);
 
         //Assert
         assertNotNull(employee);
@@ -35,9 +37,10 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
         //Act
-        Employee employee = new Employee(firstName, lastName, description, jobYears);
+        Employee employee = new Employee(firstName, lastName, description, jobYears,email);
 
         //Assert
         assertEquals(firstName, employee.getFirstName());
@@ -56,12 +59,13 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears,email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
@@ -76,12 +80,13 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears,email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
@@ -96,12 +101,13 @@ public class EmployeeTests {
         String lastName = null;
         String description = "ring bearer";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears,email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
@@ -116,12 +122,13 @@ public class EmployeeTests {
         String lastName = "";
         String description = "ring bearer";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears,email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
@@ -136,12 +143,13 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = null;
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears, email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
@@ -156,12 +164,13 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = "";
         int jobYears = 4;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears, email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
@@ -176,54 +185,57 @@ public class EmployeeTests {
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = -15;
+        String email = "frodobaggins@hotmail.com";
 
-        String exceptionMessage = "First name, last name, and description must not be null or empty. Job years must be greater than 0.";
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
         //Act + Assert
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(firstName, lastName, description, jobYears);
+            new Employee(firstName, lastName, description, jobYears,email);
         });
         assertEquals(exceptionMessage, exception.getMessage());
     }
 
-    @Test
-    public void testLastNamenotNull(){
+    /**
+     * Test of Employee if exception is thrown, of class Employee, when email is null.
+     */
 
+    @Test
+    public void testExceptionNullEmail () {
         //Arrange
         String firstName = "Frodo";
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = 4;
-        //Act
-        Employee employee = new Employee(firstName, lastName, description, jobYears);
-        //Assert
-        assertNotNull(employee.getLastName());
+        String email = null;
+
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
+
+        //Act + Assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Employee(firstName, lastName, description, jobYears,email);
+        });
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 
+    /**
+     * Test of Employee if exception is thrown, of class Employee, when email is empty.
+     */
     @Test
-    public void testDescriptionnotNull(){
+    public void testExceptionEmptyEmail () {
         //Arrange
         String firstName = "Frodo";
         String lastName = "Baggins";
         String description = "ring bearer";
         int jobYears = 4;
-        //Act
-        Employee employee = new Employee(firstName, lastName, description, jobYears);
-        //Assert
-        assertNotNull(employee.getDescription());
+        String email = "";
 
-    }
+        String exceptionMessage = "First name, last name, description and email must not be null or empty. Job years must be greater than 0.";
 
-    @Test
-    public void testJobYearsnotNull(){
-        //Arrange
-        String firstName = "Frodo";
-        String lastName = "Baggins";
-        String description = "ring bearer";
-        int jobYears = 4;
-        //Act
-        Employee employee = new Employee(firstName, lastName, description, jobYears);
-        //Assert
-        assertNotNull(employee.getJobYears());
+        //Act + Assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Employee(firstName, lastName, description, jobYears,email);
+        });
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 }
