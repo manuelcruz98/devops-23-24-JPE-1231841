@@ -914,6 +914,7 @@ public class EmployeeTests {
 
 ```
 # Commit the changes
+git add .
 git commit -m "#4 - Added tests to email field validation"
 
 # Switch to the master branch
@@ -929,6 +930,8 @@ git tag v1.3.0
 git push origin v1.3.0
 
 ````
+
+I should have used the command "git merge --no-ff". This way, GIt would create a new commit object, even if a fast forward merge is possible. This will preserve the information that a feature branch once existed.
 
 3. Create Branches for Fixing Bugs:
 
@@ -973,6 +976,7 @@ public void setEmail(String email) {
 
 ```
 # Commit the changes
+git add .
 git commit -m "#5 - Fix invalid email and respective tests"
 
 # Switch to the master branch
@@ -994,6 +998,8 @@ git tag ca1-part2
 git push origin ca1-part2
 
 ````
+
+I should have used the command "git merge --no-ff". This way, GIt would create a new commit object, even if a fast forward merge is possible. This will preserve the information that a feature branch once existed.
 
 ### Conclusion
 
