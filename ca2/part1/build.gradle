@@ -75,3 +75,9 @@ task backup(type: Copy) {
     from 'src'
     into 'backup'
 }
+
+task createZip(type: Zip) {
+    from 'src'
+    archiveFileName = 'src.zip'
+    destinationDirectory = file('zipFile')
+}
