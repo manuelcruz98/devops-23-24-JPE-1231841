@@ -20,8 +20,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Greg Turnquist
- */
+
+ @author Greg Turnquist*/
 // tag::code[]
 @Component // <1>
 public class DatabaseLoader implements CommandLineRunner { // <2>
@@ -35,7 +35,9 @@ public class DatabaseLoader implements CommandLineRunner { // <2>
 
 	@Override
 	public void run(String... strings) throws Exception { // <4>
-		this.repository.save(new Employee("Frodo", "Baggins", "ring bearer", 4, "frodobaggins@hotmail.com"));
+		this.repository.save(new Employee("Frodo", "Baggins", "ring bearer", "ring bearer", 4, "frodo@baggins.com"));
+		this.repository.save(new Employee("Bilbo", "Baggins", "burglar", "burglar", 7, "baggins@bilbo.com"));
+		this.repository.save(new Employee("Smeagol", "Gollum", "thief", "thief", 2, "gollum@smeagol.com"));
 	}
 }
 // end::code[]

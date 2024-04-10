@@ -1,53 +1,52 @@
-/*
- * Copyright 2015 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.greglturnquist.payroll;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 /**
  * @author Greg Turnquist
  */
 // tag::code[]
 @Entity // <1>
-public class Employee {
+class Employee {
 
     private @Id @GeneratedValue Long id; // <2>
     private String firstName;
     private String lastName;
     private String description;
     private int jobYears;
+    private String jobTitle;
     private String email;
 
-    private Employee() {
+    protected Employee() {}
+
+    public Employee(String firstName, String lastName, String description, String jobTitle, int jobYears, String email) {
+        if (!validateArguments(firstName, lastName, description, jobTitle, jobYears, email)) {
+            throw new IllegalArgumentException("Invalid arguments provided");
+        }
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.description = description;
+        this.jobTitle = jobTitle;
+        this.jobYears = jobYears;
+        this.email = email;
     }
 
-    public Employee(String firstName, String lastName, String description, int jobYears, String email) {
-        setFirstName(firstName);
-        setLastName(lastName);
-        setDescription(description);
-        setJobYears(jobYears);
-        setEmail(email);
+    public boolean validateArguments(String firstName, String lastName, String description, String jobTitle, int jobYears, String email) {
+        if (firstName == null || firstName.trim().isEmpty()) return false;
+        if (lastName == null ||  lastName.trim().isEmpty()) return false;
+        if (description == null ||  description.trim().isEmpty()) return false;
+        if (jobTitle == null ||  jobTitle.trim().isEmpty()) return false;
+        if (jobYears < 0) return false;
+        if (email == null || email.trim().isEmpty()) return false;
+
+        String emailValidation = "^[A-Za-z0-9+_.-]+@(.+)$";
+        if (!email.matches(emailValidation)) return false;
+
+        return true;
     }
 
     @Override
@@ -59,14 +58,16 @@ public class Employee {
                 Objects.equals(firstName, employee.firstName) &&
                 Objects.equals(lastName, employee.lastName) &&
                 Objects.equals(description, employee.description) &&
-                jobYears == employee.jobYears &&
+                Objects.equals(jobTitle, employee.jobTitle) &&
+                Objects.equals(jobYears, employee.jobYears) &&
                 Objects.equals(email, employee.email);
+
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, firstName, lastName, description, jobYears, email);
+        return Objects.hash(id, firstName, lastName, description, jobTitle, jobYears, email);
     }
 
     public Long getId() {
@@ -82,8 +83,6 @@ public class Employee {
     }
 
     public void setFirstName(String firstName) {
-        if (firstName == null || firstName.isEmpty())
-            throw new IllegalArgumentException("First name must not be null or empty.");
         this.firstName = firstName;
     }
 
@@ -92,8 +91,6 @@ public class Employee {
     }
 
     public void setLastName(String lastName) {
-        if (lastName == null || lastName.isEmpty())
-            throw new IllegalArgumentException("Last name must not be null or empty.");
         this.lastName = lastName;
     }
 
@@ -102,8 +99,6 @@ public class Employee {
     }
 
     public void setDescription(String description) {
-        if (description == null || description.isEmpty())
-            throw new IllegalArgumentException("Description must not be null or empty.");
         this.description = description;
     }
 
@@ -112,9 +107,15 @@ public class Employee {
     }
 
     public void setJobYears(int jobYears) {
-        if (jobYears < 0)
-            throw new IllegalArgumentException("Job years must be greater than 0.");
         this.jobYears = jobYears;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
     }
 
     public String getEmail() {
@@ -122,17 +123,6 @@ public class Employee {
     }
 
     public void setEmail(String email) {
-        if (email == null || email.isEmpty() || !email.contains("@"))
-            throw new IllegalArgumentException("Invalid input");
-
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("Invalid email format");
-        }
-
         this.email = email;
     }
 
@@ -143,9 +133,9 @@ public class Employee {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", description='" + description + '\'' +
-                ", jobYears=" + jobYears + '\'' +
-                ", email=" + email +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", jobYears='" + jobYears + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
-// end::code[]
