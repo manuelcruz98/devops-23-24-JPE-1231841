@@ -35,3 +35,9 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task copyJarToDist(type: Copy) {
+	from 'build/libs/' // Assuming your JAR file is generated in the build/libs directory
+	into 'dist'
+	include '*.jar' // Only include JAR files
+}
