@@ -41,3 +41,9 @@ task copyJarToDist(type: Copy) {
 	into 'dist'
 	include '*.jar' // Only include JAR files
 }
+
+task deleteWebpackFiles(type: Delete) {
+	delete 'src/main/resources/static/built/'
+}
+
+clean.dependsOn deleteWebpackFiles
