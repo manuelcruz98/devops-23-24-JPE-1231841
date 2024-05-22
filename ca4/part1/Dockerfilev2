@@ -1,0 +1,14 @@
+# Start from the official OpenJDK image
+FROM gradle:jdk21
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Copy the compiled application and any other necessary files into the Docker image
+COPY ./build/libs/basic_demo-0.1.0.jar /app
+
+# Expose the port that your application will run on
+EXPOSE 59001
+
+# Define the entry point that Docker will execute when the container starts
+ENTRYPOINT ["java", "-cp", "basic_demo-0.1.0.jar", "basic_demo.ChatServerApp", "59001"]
