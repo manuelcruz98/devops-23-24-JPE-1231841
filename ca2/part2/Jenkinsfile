@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out the code from the repository'
+                git branch: 'main', url: 'https://github.com/manuelcruz98/devops-23-24-JPE-1231841.git'
+            }
+        }
+        stage('Assemble') {
+            steps {
+                echo 'Assembling...'
+                dir('ca2/part1') {
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew clean assemble'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                dir('ca2/part1') {
+                    sh './gradlew test'
+                    junit 'build/test-results/test/*.xml'
+                }
+            }
+        }
+        stage('Archive') {
+            steps {
+                echo 'Archiving...'
+                dir('ca2/part1') {
+                    archiveArtifacts 'build/libs/*.jar'
+                }
+            }
+        }
+        stage('Publish Image') {
+            steps {
+                echo 'Publishing Docker image...'
+                dir('ca2/part1') {
+                    sh 'docker build -t my-tomcat-app .'
+                    sh 'docker tag my-tomcat-app mydockerhub/my-tomcat-app:latest'
+                    sh 'docker push mydockerhub/my-tomcat-app:latest'
+                }
+            }
+        }
+    }
+}
