@@ -11,7 +11,6 @@ plugins {
     id 'application'
 }
 
-
 repositories {
     mavenCentral()
 }
@@ -28,9 +27,11 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
-
 // Define the main class for the application
-mainClassName = 'basic_demo.App'
+application {
+    mainClass = 'basic_demo.App'
+}
+
 description = "A trivial Gradle build"
 version = "0.1.0"
 
@@ -41,14 +42,12 @@ jar {
         attributes "Main-Class": "basic_demo.App"
     }
 
-   from {
+    from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
-
-
-task runClient(type:JavaExec, dependsOn: classes){
+task runClient(type: JavaExec, dependsOn: classes) {
     group = "DevOps"
     description = "Launches a chat client that connects to a server on localhost:59001 "
 
@@ -59,7 +58,7 @@ task runClient(type:JavaExec, dependsOn: classes){
     args 'localhost', '59001'
 }
 
-task runServer (type:JavaExec, dependsOn: classes){
+task runServer(type: JavaExec, dependsOn: classes) {
     group = "DevOps"
     description = "Launches a chat server that listens on port 59001"
 
@@ -68,7 +67,6 @@ task runServer (type:JavaExec, dependsOn: classes){
     mainClass = 'basic_demo.ChatServerApp'
 
     args '59001'
-
 }
 
 task backup(type: Copy) {
