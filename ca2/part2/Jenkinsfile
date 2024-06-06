@@ -11,7 +11,7 @@ pipeline {
         stage('Assemble') {
             steps {
                 echo 'Assembling...'
-                dir('ca2/part1') {
+                dir('ca2/part2') {
                     sh 'chmod +x ./gradlew'
                     sh './gradlew clean assemble'
                 }
@@ -20,16 +20,31 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing...'
-                dir('ca2/part1') {
+                dir('ca2/part2') {
                     sh './gradlew test'
                     junit 'build/test-results/test/*.xml'
+                }
+            }
+        }
+        stage('Javadoc') {
+            steps {
+                echo 'Generating Javadoc...'
+                dir('ca2/part2') {
+                    sh './gradlew javadoc'
+                    publishHTML target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'build/docs/javadoc/',
+                        reportFiles: 'index.html'
+                    ]
                 }
             }
         }
         stage('Archive') {
             steps {
                 echo 'Archiving...'
-                dir('ca2/part1') {
+                dir('ca2/part2') {
                     archiveArtifacts 'build/libs/*.jar'
                 }
             }
@@ -37,7 +52,7 @@ pipeline {
         stage('Publish Image') {
             steps {
                 echo 'Publishing Docker image...'
-                dir('ca2/part1') {
+                dir('ca2/part2') {
                     sh 'docker build -t my-tomcat-app .'
                     sh 'docker tag my-tomcat-app mydockerhub/my-tomcat-app:latest'
                     sh 'docker push mydockerhub/my-tomcat-app:latest'
