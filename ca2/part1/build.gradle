@@ -33,7 +33,6 @@ application {
 }
 
 description = "A trivial Gradle build"
-version = "0.1.0"
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE // allow duplicates
@@ -55,7 +54,7 @@ task runClient(type: JavaExec, dependsOn: classes) {
 
     mainClass = 'basic_demo.ChatClientApp'
 
-    args 'localhost', '59001'
+    args = ['localhost', '59001']
 }
 
 task runServer(type: JavaExec, dependsOn: classes) {
@@ -66,7 +65,7 @@ task runServer(type: JavaExec, dependsOn: classes) {
 
     mainClass = 'basic_demo.ChatServerApp'
 
-    args '59001'
+    args ['59001']
 }
 
 task backup(type: Copy) {
