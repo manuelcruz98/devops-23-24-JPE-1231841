@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        // Define Docker Hub credentials ID as configured in Jenkins credentials
+        DOCKERHUB_CREDENTIALS = 'mane21'
+        // Define the Docker image name
+        IMAGE_NAME = "mane21/image-generated-with-jenkins"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,56 +15,111 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/manuelcruz98/devops-23-24-JPE-1231841.git'
             }
         }
+
         stage('Assemble') {
             steps {
-                echo 'Assembling...'
+                         echo 'Assembling...'
                 dir('ca2/part2') {
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew clean assemble'
+                    script {
+                        // Ensure the Gradle Wrapper is executable (Unix) or available (Windows)
+                        if (isUnix()) {
+                            sh 'chmod +x ./gradlew'
+                            sh './gradlew clean assemble -x test'
+                        } else {
+                            bat 'gradlew.bat clean assemble -x test'
+                        }
+                    }
+                }
+            }
+            post {
+                success {
+                    // Archive the build artifacts
+                    archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true
                 }
             }
         }
+
         stage('Test') {
             steps {
+
                 echo 'Testing...'
                 dir('ca2/part2') {
-                    sh './gradlew test'
-                    junit 'build/test-results/test/*.xml'
+                    script {
+                        // Ensure the Gradle Wrapper is executable (Unix) or available (Windows)
+                        if (isUnix()) {
+                            sh './gradlew test'
+                        } else {
+                            bat 'gradlew.bat test'
+                        }
+                    }
+                    // Publish JUnit test results
+                    junit '**/build/test-results/test/*.xml'
+                }
+            }
+            post {
+                always {
+                    // Archive the JUnit test results
+                    junit '**/build/test-results/test/TEST-*.xml'
                 }
             }
         }
+
         stage('Javadoc') {
             steps {
+
                 echo 'Generating Javadoc...'
                 dir('ca2/part2') {
-                    sh './gradlew javadoc'
+                    script {
+                        // Ensure the Gradle Wrapper is executable (Unix) or available (Windows)
+                        if (isUnix()) {
+                            sh './gradlew javadoc'
+                        } else {
+                            bat 'gradlew.bat javadoc'
+                        }
+                    }
+                    // Archive and publish Javadoc
+                    archiveArtifacts artifacts: '**/build/docs/javadoc/**', allowEmptyArchive: true
                     publishHTML target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
-                        reportDir: 'build/docs/javadoc/',
-                        reportFiles: 'index.html'
+                        reportDir: 'build/docs/javadoc',
+                        reportFiles: 'index.html',
+                        reportName: 'Javadoc Report'
                     ]
                 }
             }
         }
+
         stage('Archive') {
             steps {
+
                 echo 'Archiving...'
                 dir('ca2/part2') {
-                    archiveArtifacts 'build/libs/*.jar'
+                    // Archive build artifacts
+                    archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true
                 }
             }
         }
+
         stage('Publish Image') {
             steps {
+
                 echo 'Publishing Docker image...'
-                dir('ca2/part2') {
-                    sh 'docker build -t my-tomcat-app .'
-                    sh 'docker tag my-tomcat-app mydockerhub/my-tomcat-app:latest'
-                    sh 'docker push mydockerhub/my-tomcat-app:latest'
+                script {
+                def dockerImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", '--progress=plain ca2/part2/')
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
+
+                        dockerImage.push()
+                    }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
