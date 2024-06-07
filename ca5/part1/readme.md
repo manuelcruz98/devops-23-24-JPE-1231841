@@ -16,9 +16,10 @@ ___
 
 #### 0.2. Check to see if you have jenkins running locally:
 
-If you didn't specify anything different from the basic setup head on to
+I changed to port 6969, because I already had a service running on port 8080. So, to access the Jenkins dashboard, you
+will have to go to:
 
-```localhost:6969```
+```localhost:6969/```
 
 ### 1. Creating a new Pipeline
 
@@ -61,8 +62,15 @@ pipeline {
             steps {
                 echo 'Assembling...'
                 dir('ca2/part1') {
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew clean assemble'
+                    script {
+                        if (isUnix()) {
+                            sh 'chmod +x ./gradlew'
+                            sh './gradlew clean assemble'
+                        } else {
+                            bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "chmod +x ./gradlew"'
+                            bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "./gradlew clean assemble"'
+                        }
+                    }
                 }
             }
         }
@@ -70,7 +78,13 @@ pipeline {
             steps {
                 echo 'Testing...'
                 dir('ca2/part1') {
-                    sh './gradlew test'
+                    script {
+                        if (isUnix()) {
+                            sh './gradlew test'
+                        } else {
+                            bat '"C:\\Program Files\\Git\\bin\\bash.exe" -c "./gradlew test"'
+                        }
+                    }
                     junit 'build/test-results/test/*.xml'
                 }
             }
